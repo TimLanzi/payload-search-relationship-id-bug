@@ -22,7 +22,13 @@ export const beforeSyncWithSearch: BeforeSync = async ({ originalDoc, searchDoc,
   if (categories && Array.isArray(categories) && categories.length > 0) {
     // get full categories and keep a flattened copy of their most important properties
     try {
-      const mappedCategories = categories.map((category) => {
+      const populatedCategories = await payload.find({
+        collection: "categories",
+        where: { id: { in: categories } },
+        pagination: false,
+      });
+
+      const mappedCategories = populatedCategories.docs.map((category) => {
         const { id, title } = category
 
         return {
